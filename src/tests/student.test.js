@@ -8,7 +8,7 @@ test("POST -> '/api/v1/students', should return status code 201 and to have leng
         firstName: "Jose",
         lastName: "Gaspar",
         birthday: "2023-02-05",
-        program: "Node"
+        program: "software engineer"
     }
     const res = await supertest(app)
     .post('/api/v1/students')
