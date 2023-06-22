@@ -1,5 +1,7 @@
 const supertest = require("supertest")
 const app = require("../app")
+const Author = require("../models/Author")
+require('../models')
 
 let bookId
 
@@ -22,6 +24,7 @@ test("GET -> '/api/v1/books' should return status code 200", async()=>{
     const res = await supertest(app).get('/api/v1/books')
     expect(res.status).toBe(200)
     expect(res.body).toHaveLength(1)
+    expect(res.body[0].authors).toBeDefined()
 })
 
 test("GET ONE -> '/api/v1/books/:id' should return status code 200 and res.body.name = body.name", async()=>{
@@ -31,6 +34,7 @@ test("GET ONE -> '/api/v1/books/:id' should return status code 200 and res.body.
 })
 
 test("PUT -> '/api/v1/books/:id' should return status code 200 and res.body.name = body.name" , async()=>{
+    
     const body = {
         name:"como ganar amigos e influir en los demas"
     }
@@ -40,6 +44,25 @@ test("PUT -> '/api/v1/books/:id' should return status code 200 and res.body.name
 
     expect(res.status).toBe(200)
     expect(res.body.name).toBe(body.name)
+})
+
+test("POST -> `/api/v1/books/:id/authors` set auhors book, should return status code 200 and res.body.length = 1 ", async()=>{
+   
+    const body = {
+        name:"Dale Carnegie",
+        country:"USA"
+    }
+    const author = await Author.create(body)
+
+    const res = await supertest(app)
+        .post(`/api/v1/books/${bookId}/authors`)
+        .send([author.id])
+    
+    expect(res.status).toBe(200)
+    expect(res.body).toHaveLength(1)
+
+    author.destroy()
+
 })
 
 test("Delete -> '/api/v1/books/:id' should return status code 204 ", async()=>{

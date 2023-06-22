@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update } = require('../controllers/student.controllers');
+const { getAll, create, getOne, remove, update, setCourses } = require('../controllers/student.controllers');
 const express = require('express');
 
 const routerStudent = express.Router();
@@ -6,6 +6,9 @@ const routerStudent = express.Router();
 routerStudent.route('/')
     .get(getAll)
     .post(create);
+
+routerStudent.route('/:id/courses')  
+    .post(setCourses)
 
 routerStudent.route('/:id')
     .get(getOne)

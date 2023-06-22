@@ -1,8 +1,9 @@
 const catchError = require('../utils/catchError');
 const Book = require('../models/Book');
+const Author = require('../models/Author')
 
 const getAll = catchError(async(req, res) => {
-    const results = await Book.findAll();
+    const results = await Book.findAll({include:[Author]});
     return res.json(results);
 });
 
@@ -34,10 +35,26 @@ const update = catchError(async(req, res) => {
     return res.json(result[1][0]);
 });
 
+const setAuthors = catchError(async(req,res)=>{ // /books/:id/authors
+    
+    //paso 1 ->. obtern id y encontrrar al libro con ese id
+    const {id} = req.params
+    const book = await Book.findByPk(id)
+
+    //paso 2 ->. setear el autor en formato array
+    await book.setAuthors(req.body)
+
+    //paso 3 ->. Leo los autores del libro
+    const authors = await book.getAuthors()
+
+    return res.json(authors)
+})
+
 module.exports = {
     getAll,
     create,
     getOne,
     remove,
-    update
+    update,
+    setAuthors
 }

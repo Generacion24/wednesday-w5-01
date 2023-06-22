@@ -1,8 +1,9 @@
 const catchError = require('../utils/catchError');
 const Author = require('../models/Author');
+const Book = require('../models/Book');
 
 const getAll = catchError(async(req, res) => {
-    const results = await Author.findAll();
+    const results = await Author.findAll({include:[Book]});
     return res.json(results);
 });
 

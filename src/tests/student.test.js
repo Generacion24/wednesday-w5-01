@@ -1,5 +1,7 @@
 const supertest = require("supertest")
-const app = require('../app')
+const app = require('../app');
+const Course = require("../models/Course");
+require('../models')
 
 let studentId;
 
@@ -26,6 +28,7 @@ test("GET -> '/api/v1/students' should return status code 200", async()=>{
 
     expect(res.status).toBe(200)
     expect(res.body).toHaveLength(1)
+    expect(res.body[0].courses).toBeDefined()
 })
 
 test("GET ONE-> `/api/v1/students/:id` should return status code 200, and res.body.firstName should return Jose", async()=>{
@@ -46,6 +49,23 @@ test("PUT -> '/api/v1/students/:id' should return status code 200 and res.body.n
 
     expect(res.status).toBe(200)
     expect(res.body.firstName).toBe(body.firstName)
+})
+
+test("POST -> 'api/v1/students/:id/courses' set courses students, should status code 200 and res.body.length = 1",async()=>{
+    const body = {
+        name:"object oriented programming",
+        credits: 10
+    }
+    const course = await Course.create(body)
+
+    const res = await supertest(app)
+        .post(`/api/v1/students/${studentId}/courses`)
+        .send([course.id])
+
+    expect(res.status).toBe(200)
+    expect(res.body).toHaveLength(1)
+
+    await course.destroy()
 })
 
 test("Delete -> '/api/v1/students/:id' should return status code 204 ", async()=>{

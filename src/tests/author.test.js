@@ -1,6 +1,6 @@
 const supertest = require("supertest")
 const app = require("../app")
-
+require('../models')
 let authorId
 
 test("POST -> '/api/v1/authors', should return status code 201 ", async()=>{
